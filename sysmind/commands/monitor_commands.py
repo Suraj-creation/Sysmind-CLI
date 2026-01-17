@@ -223,12 +223,12 @@ def _handle_memory(args: argparse.Namespace, formatter: Formatter, database: Dat
 def _handle_dashboard(args: argparse.Namespace, formatter: Formatter, database: Database) -> int:
     """Run real-time dashboard."""
     
-    realtime = RealtimeMonitor()
     interval = getattr(args, 'interval', 1.0)
     duration = getattr(args, 'duration', None)
+    realtime = RealtimeMonitor(interval=interval)
     
     try:
-        realtime.run_dashboard(interval=interval, duration=duration)
+        realtime.run_dashboard(duration=duration, formatter=formatter)
     except KeyboardInterrupt:
         pass
     

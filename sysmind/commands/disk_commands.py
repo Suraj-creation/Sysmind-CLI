@@ -191,16 +191,18 @@ def _handle_analyze(args: argparse.Namespace, formatter: Formatter, database: Da
     # File type breakdown
     if stats.extensions:
         print(f"  {Colors.CYAN}Top File Types:{Colors.RESET}")
-        sorted_exts = sorted(stats.extensions.items(), key=lambda x: x[1]['size'], reverse=True)
+        # extensions is Dict[str, Tuple[int, int]] where tuple is (count, size)
+        sorted_exts = sorted(stats.extensions.items(), key=lambda x: x[1][1], reverse=True)
         for ext, info in sorted_exts[:10]:
             ext_name = ext if ext else '(no extension)'
-            print(f"    {ext_name:>12}: {info['count']:>6} files, {formatter.file_size(info['size']):>10}")
+            count, size = info
+            print(f"    {ext_name:>12}: {count:>6} files, {formatter.file_size(size):>10}")
         print()
     
     # Largest files
-    if stats.top_files:
+    if stats.largest_files:
         print(f"  {Colors.CYAN}Largest Files:{Colors.RESET}")
-        for f in stats.top_files[:limit]:
+        for f in stats.largest_files[:limit]:
             rel_path = os.path.relpath(f.path, path)
             print(f"    {formatter.file_size(f.size):>10}  {rel_path}")
         print()
